@@ -1,7 +1,11 @@
 package com.example.jmdnshttp;
 
+import java.io.File;
+import java.io.IOException;
+
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
+import android.os.Environment;
 import android.app.Activity;
 import android.view.Menu;
 import android.view.View;
@@ -15,6 +19,7 @@ public class MainActivity extends Activity {
 	private EditText textField;
 	private String localAddress;
 	private boolean started;
+	private File path;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -22,6 +27,12 @@ public class MainActivity extends Activity {
 		setContentView(R.layout.activity_main);
 		
 		started = false;
+		if(isExternalStorageWritable()){
+			path = (Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS));
+		}
+		else{
+			path = getFilesDir();
+		}
 		
 		//set up wifi manager and IP address
         WifiManager wifi = (WifiManager)
@@ -39,8 +50,12 @@ public class MainActivity extends Activity {
 		startButton.setOnClickListener(new OnClickListener() {       	 
 			@Override
 			public void onClick(View arg0) {
-				if(!started)
-					initServer(localAddress);	
+				try{
+					if(!started)
+						initServer(localAddress);	
+				}catch(Exception e){
+					System.out.println("Error starting server");
+				}
 			} 
 		}); 
 		
@@ -77,11 +92,20 @@ public class MainActivity extends Activity {
 		return  address;
 	}
 	
+	// Checks if external storage is available for read and write
+	private boolean isExternalStorageWritable() {
+	    String state = Environment.getExternalStorageState();
+	    if (Environment.MEDIA_MOUNTED.equals(state)) {
+	        return true;
+	    }
+	    return false;
+	}
+	
 	
 	//method to initialise the http file server
-	private boolean initServer(String address){
+	private boolean initServer(String address) throws IOException{
 		if(address !=null){
-			server  = new FileServer(8080); //80 is reserved for root users on android
+			server  = new FileServer(8080, path); //80 is reserved for root users on android
 			
 			if(server!=null){
 				textField.append("The server has been started, at " + localAddress + ":8080");

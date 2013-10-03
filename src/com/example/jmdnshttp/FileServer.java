@@ -1,20 +1,29 @@
 package com.example.jmdnshttp;
 
-public class FileServer extends NanoHTTPD{
+import java.io.File;
+import java.io.IOException;
+import java.util.Properties;
 
-	public FileServer(int port) {
-		super(port);
+public class FileServer extends NanoHTTPD{
+	
+	File path;
+
+	public FileServer(int port, File rootDir) throws IOException {
+		
+		
+		
+		super(port, rootDir);
 		
 	}
 	
-	public Response serve(){
-		Response res;
-		
-		res = new Response("this is the simple response");
-		
-		
-		return res;
-	}
+
+	
+    public Response serve( String uri, String method, Properties header, Properties parms, Properties files ) {
+    	
+        File newPath = new File(path.getAbsolutePath() + "/samer");
+        Response r = super.serveFile("/index.htm", header, path, true);
+        return r;
+}
 	
 	
 }
