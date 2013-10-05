@@ -55,20 +55,13 @@ public class MainActivity extends Activity {
 						initServer(localAddress);	
 				}catch(Exception e){
 					System.out.println("Error starting server");
+					e.printStackTrace();
 				}
 			} 
 		}); 
 		
-		
-		
-		
-		
 		//-------------------------------------------------------------------------------
 		//End UI Features----------------------------------------------------------------
-		
-
-		
-
 	}
 
 	@Override
@@ -85,10 +78,7 @@ public class MainActivity extends Activity {
 		String address =  (ipAddress & 0xFF ) + "." +
 	               ((ipAddress >> 8 ) & 0xFF) + "." +
 	               ((ipAddress >> 16 ) & 0xFF) + "." +
-	               ( (ipAddress >> 24 ) & 0xFF) ;
-		
-		
-		
+	               ( (ipAddress >> 24 ) & 0xFF) ;		
 		return  address;
 	}
 	
@@ -105,15 +95,38 @@ public class MainActivity extends Activity {
 	//method to initialise the http file server
 	private boolean initServer(String address) throws IOException{
 		if(address !=null){
-			server  = new FileServer(8080, path); //80 is reserved for root users on android
+			server = new FileServer(8080, path); //80 is reserved for root users on android
+			server.startServer();
 			
 			if(server!=null){
 				textField.append("The server has been started, at " + localAddress + ":8080");
-			}
-			
+				return true;
+			}			
 		}
 		
 		return false;
 	}
+	
+	//method to initialise the http file server
+	private boolean killServer(){
+		System.out.println("shutting down server");
+		if(server!=null){
+			server.stopServer();
+			return true;
+		}
+		else
+			return false;
+		
+		
+	}
+	
+    protected void onDestroy() {
+    	super.onDestroy();
+    	killServer();
+    }
+	
+	//private void killServer(){
+		//server.
+	//}
 
 }
