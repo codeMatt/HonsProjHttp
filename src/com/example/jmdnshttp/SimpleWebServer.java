@@ -402,6 +402,7 @@ public class SimpleWebServer extends NanoHTTPD {
                     res = createResponse(Response.Status.OK, mime, new FileInputStream(file));
                     res.addHeader("Content-Length", "" + fileLen);
                     res.addHeader("ETag", etag);
+                    res.addHeader("file-name", file.getName());
                 }
             }
         } catch (IOException ioe) {
