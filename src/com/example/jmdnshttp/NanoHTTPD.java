@@ -9,9 +9,7 @@ import java.util.*;
 
 /**
  * A simple, tiny, nicely embeddable HTTP server in Java
- * <p/>
- * <p/>
- * NanoHTTPD
+ * <p/> * NanoHTTPD
  * <p></p>Copyright (c) 2012-2013 by Paul S. Hawke, 2001,2005-2013 by Jarno Elonen, 2010 by Konstantinos Togias</p>
  * <p/>
  * <p/>
@@ -127,6 +125,7 @@ public abstract class NanoHTTPD {
      * @throws IOException if the socket is in use.
      */
     public void start() throws IOException {
+    	System.out.println("in nanohttpd server.start()");
         myServerSocket = new ServerSocket();
         myServerSocket.bind((hostname != null) ? new InetSocketAddress(hostname, myPort) : new InetSocketAddress(myPort));
 
@@ -135,6 +134,7 @@ public abstract class NanoHTTPD {
             public void run() {
                 do {
                     try {
+                    	System.out.println("in nanohttpd server.start(), about to accept");
                         final Socket finalAccept = myServerSocket.accept();
                         final InputStream inputStream = finalAccept.getInputStream();
                         if (inputStream == null) {
@@ -234,6 +234,7 @@ public abstract class NanoHTTPD {
             try {
                 session.parseBody(files);
             } catch (IOException ioe) {
+            	System.out.println("ioexception called parsebody()");
                 return new Response(Response.Status.INTERNAL_ERROR, MIME_PLAINTEXT, "SERVER INTERNAL ERROR: IOException: " + ioe.getMessage());
             } catch (ResponseException re) {
                 return new Response(re.getStatus(), MIME_PLAINTEXT, re.getMessage());
@@ -684,7 +685,8 @@ public abstract class NanoHTTPD {
         }
     }
 
-    public static final class ResponseException extends Exception {
+    @SuppressWarnings("serial")
+	public static final class ResponseException extends Exception {
 
         private final Response.Status status;
 
@@ -813,6 +815,7 @@ public abstract class NanoHTTPD {
                 // Ok, now do the serve()
                 Response r = serve(this);
                 if (r == null) {
+                	System.out.println("serve() returned null");
                     throw new ResponseException(Response.Status.INTERNAL_ERROR, "SERVER INTERNAL ERROR: Serve() returned a null response.");
                 } else {
                     cookies.unloadQueue(r);
@@ -824,6 +827,7 @@ public abstract class NanoHTTPD {
                 throw e;
             } catch (IOException ioe) {
                 Response r = new Response(Response.Status.INTERNAL_ERROR, MIME_PLAINTEXT, "SERVER INTERNAL ERROR: IOException: " + ioe.getMessage());
+                System.out.println("ioexception in execute");
                 r.send(outputStream);
                 safeClose(outputStream);
             } catch (ResponseException re) {
@@ -969,6 +973,7 @@ public abstract class NanoHTTPD {
 
                 pre.put("uri", uri);
             } catch (IOException ioe) {
+            	 System.out.println("ioexception in decode uri");
                 throw new ResponseException(Response.Status.INTERNAL_ERROR, "SERVER INTERNAL ERROR: IOException: " + ioe.getMessage(), ioe);
             }
         }
@@ -1028,6 +1033,7 @@ public abstract class NanoHTTPD {
                             }
                         } else {
                             if (boundarycount > bpositions.length) {
+                            	System.out.println("error processing request");
                                 throw new ResponseException(Response.Status.INTERNAL_ERROR, "Error processing request");
                             }
                             int offset = stripMultipartHeaders(fbuf, bpositions[boundarycount - 2]);
@@ -1043,6 +1049,7 @@ public abstract class NanoHTTPD {
                     }
                 }
             } catch (IOException ioe) {
+            	System.out.println("ioexception in decodemultipartdata");
                 throw new ResponseException(Response.Status.INTERNAL_ERROR, "SERVER INTERNAL ERROR: IOException: " + ioe.getMessage(), ioe);
             }
         }

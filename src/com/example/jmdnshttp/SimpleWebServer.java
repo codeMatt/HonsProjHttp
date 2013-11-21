@@ -1,5 +1,12 @@
 package com.example.jmdnshttp;
 
+/**
+ * @author Paul S. Hawke (paul.hawke@gmail.com)
+ */
+ 
+
+
+import android.annotation.SuppressLint;
 import java.io.*;
 import java.net.URLEncoder;
 import java.util.*;
@@ -12,14 +19,24 @@ public class SimpleWebServer extends NanoHTTPD {
     /**
      * Default Index file names.
      */
-    public static final List<String> INDEX_FILE_NAMES = new ArrayList<String>() {{
+    public static final List<String> INDEX_FILE_NAMES = new ArrayList<String>() {/**
+		 * 
+		 */
+		private static final long serialVersionUID = 7701931091515502518L;
+
+	{
         add("index.html");
         add("index.htm");
     }};
     /**
      * Hashtable mapping (String)FILENAME_EXTENSION -> (String)MIME_TYPE
      */
-    private static final Map<String, String> MIME_TYPES = new HashMap<String, String>() {{
+    private static final Map<String, String> MIME_TYPES = new HashMap<String, String>() {/**
+		 * 
+		 */
+		private static final long serialVersionUID = 2070414985823529487L;
+
+	{
         put("css", "text/css");
         put("htm", "text/html");
         put("html", "text/html");
@@ -169,7 +186,8 @@ public class SimpleWebServer extends NanoHTTPD {
         ServerRunner.executeInstance(new SimpleWebServer(host, port, rootDirs, quiet));
     }
 
-    private static void registerPluginForMimeType(String[] indexFiles, String mimeType, WebServerPlugin plugin, Map<String, String> commandLineOptions) {
+    @SuppressLint("DefaultLocale")
+	private static void registerPluginForMimeType(String[] indexFiles, String mimeType, WebServerPlugin plugin, Map<String, String> commandLineOptions) {
         if (mimeType == null || plugin == null) {
             return;
         }
@@ -188,16 +206,8 @@ public class SimpleWebServer extends NanoHTTPD {
         plugin.initialize(commandLineOptions);
     }
 
-    private File getRootDir() {
-        return rootDirs.get(0);
-    }
-
     private List<File> getRootDirs() {
         return rootDirs;
-    }
-
-    private void addWwwRootDir(File wwwroot) {
-        rootDirs.add(wwwroot);
     }
 
     /**
@@ -247,7 +257,8 @@ public class SimpleWebServer extends NanoHTTPD {
         for (File homeDir : getRootDirs()) {
             // Make sure we won't die of an exception later
             if (!homeDir.isDirectory()) {
-                return createResponse(Response.Status.INTERNAL_ERROR, NanoHTTPD.MIME_PLAINTEXT,
+            	System.out.println("given path is not a directory (" + homeDir + ")");
+            	return createResponse(Response.Status.INTERNAL_ERROR, NanoHTTPD.MIME_PLAINTEXT,
                     "INTERNAL ERRROR: given path is not a directory (" + homeDir + ").");
             }
         }

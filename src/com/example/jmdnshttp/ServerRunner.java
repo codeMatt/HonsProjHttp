@@ -6,7 +6,8 @@ public class ServerRunner {
 	
 	static NanoHTTPD serverInstance;
 	
-    public static void run(Class serverClass) {
+    @SuppressWarnings("rawtypes")
+	public static void run(Class serverClass) {
         try {
             executeInstance((NanoHTTPD) serverClass.newInstance());
         } catch (Exception e) {
@@ -15,6 +16,7 @@ public class ServerRunner {
     }
 
     public static void executeInstance(NanoHTTPD server) {
+    	System.out.println("serverrunner calling server");
     	serverInstance = server;
         try {
         	serverInstance.start();
@@ -24,8 +26,9 @@ public class ServerRunner {
         }
     }
     
-    public static void stopInstance(){
-        serverInstance.stop();
+    public static void stopInstance() throws NullPointerException{
+    	if(serverInstance != null)
+    		serverInstance.stop();
         System.out.println("Server stopped....");
     }
     

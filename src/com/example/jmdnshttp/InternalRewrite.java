@@ -3,7 +3,6 @@ package com.example.jmdnshttp;
 import java.util.Map;
 import com.example.jmdnshttp.NanoHTTPD.Response;
 
-
 /**
  * @author Paul S. Hawke (paul.hawke@gmail.com)
  *         On: 9/15/13 at 2:52 PM
